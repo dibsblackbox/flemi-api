@@ -8,13 +8,14 @@ def reverse_string(input_string):
     Returns:
     str: The reversed string.
     """
+    # Store the length of the input string
+    string_length = len(input_string)
+
     # Initialize an empty string to store the reversed string
     reversed_string = ""
 
-    # Iterate through the input string in reverse order
-    for i in range(len(input_string) - 1, -1, -1):
-        # Add each character to the reversed string
-        reversed_string += input_string[i]
+    # Reverse the string using slicing
+    reversed_string = input_string[string_length - 1::-1]
 
     # Return the reversed string
     return reversed_string
