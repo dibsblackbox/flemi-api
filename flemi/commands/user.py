@@ -1,21 +1,15 @@
 import click
 from flask import Flask
 
-
 def register_user_group(app: Flask, db):
-    @app.cli.group()
-    def user():
-        """
-        User commands
-        """
-        pass
+    user_group = app.cli.group("user", help="User commands")
 
-    @user.command()
+    @user_group.command("query")
     @click.option("--username", default=None, help="query from username")
     @click.option("--email", default=None, help="query from email")
     @click.option("--name", default=None, help="query from name")
     @click.option("--location", default=None, help="query from location")
-    def query():
+    def query(username, email, name, location):
         """
-        user query to id (returns list)
+        Query user information and return the user IDs as a list.
         """
