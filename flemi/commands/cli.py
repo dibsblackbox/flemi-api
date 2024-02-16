@@ -1,41 +1,47 @@
-from random import randint
+import random
 
-from rich import print
+import rich
 
 
-def confirm(prompt, otherwise):
+def confirm(prompt: str, otherwise: callable) -> None:
+    """Ask the user for confirmation and call the `otherwise` function if the user declines."""
     while True:
-        print(prompt, end="")
-        answer = input(" [Y/n] ")
-        if answer in "YyNn" and len(answer) == 1:
-            if answer in "Nn":
-                print("[yellow]WARNING[/yellow]: operation cancelled by user.\n")
+        rich.print(prompt, end="")
+        answer = input("[yellow] [Y/n] [/yellow]").lower()
+
+        if answer in ("y", "n") and len(answer) == 1:
+            if answer == "n":
+                rich.print("[yellow]WARNING[/yellow]: Operation cancelled by user.\n")
                 otherwise()
-            else:
-                break
-        else:
-            print(
-                "[red]Fatal[/red]: please choose [green]Y[/green] or [green]n[/green]"
-            )
-            continue
+            return
+        rich.print(
+            "[red]Fatal[/red]: Please choose [green]Y[/green] or [green]n[/green]"
+        )
 
 
-def check(prompt):
+def check(prompt: str) -> bool:
+    """Ask the user for confirmation and return True if the user confirms."""
     while True:
-        print(prompt, end="")
-        answer = input(" [Y/n] ")
-        if answer in "YyNn" and len(answer) == 1:
-            return answer in "Yy"
-        print("[red]Fatal[/red]: please choose [green]Y[/green] or [green]n[/green]")
+        rich.print(prompt, end="")
+        answer = input("[yellow] [Y/n] [/yellow]").lower()
+
+        if answer in ("y", "n") and len(answer) == 1:
+            return answer == "y"
+        rich.print(
+            "[red]Fatal[/red]: Please choose [green]Y[/green] or [green]n[/green]"
+        )
 
 
-def int_input(prompt: str, default=None, auto_default: bool = False):
+def int_input(prompt: str, default: int = None, auto_default: bool = False) -> int:
+    """Ask the user for integer input."""
     while True:
-        print(prompt, end="")
+        rich.print(prompt, end="")
         answer = input("")
+
         try:
             return int(answer)
         except Exception:
             if (default is not None) and (auto_default or answer == ""):
                 return default
-            print(f"[red]Fatal[/red]: integer is required (e.g. {randint(3, 99)})")
+            rich.print(
+                f"[red]Fatal[/red]: Integer is required (e.g. {random
