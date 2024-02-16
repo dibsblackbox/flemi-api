@@ -1,3 +1,0 @@
-[flake8]
-exclude = .git,__pypackages__,docs/source/conf.py,build,dist,src/djask/project_template,migrations
-max-line-length = 99
