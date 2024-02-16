@@ -1,30 +1,41 @@
-ci:
-  autoupdate_schedule: monthly
-repos:
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
-    hooks:
-      - id: pyupgrade
-        args: ["--py38-plus"]
-  - repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.12.0
-    hooks:
-      - id: reorder-python-imports
-        args: ["--application-directories", "src"]
-        files: flemi
-  - repo: https://github.com/psf/black
-    rev: 23.11.0
-    hooks:
-      - id: black
-        files: flemi
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-        files: flemi
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-      - id: fix-byte-order-marker
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  code_quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyupgrade reorder-python-imports black flake8 pre-commit
+
+      - name: Run pyupgrade
+        run: pyupgrade --py38-plus .
+
+      - name: Reorder imports
+        run: reorder-python-imports --application-directories src .
+
+      - name: Run black
+        run: black .
+
+      - name: Run flake8
+        run: flake8 .
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
