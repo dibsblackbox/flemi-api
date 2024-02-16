@@ -6,15 +6,16 @@ from flask import Flask
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from .commands import register_commands
+from .common import register_commands
 from .extensions import db, ma, migrate
 from .models import Column, Group, Message, Post, User
 from .settings import config
-from .utils import get_all_remote_addr
+from .utils import get_all_remotes, remote_addr
 
 def create_app(config_name=None) -> Flask:
     if config_name is None:
         config_name = os.getenv("FLASK_CONFIG", "development")
+
     app = APIFlask("flemi")
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
 
@@ -30,6 +31,7 @@ def create_app(config_name=None) -> Flask:
     register_extensions(app)
     register_commands(app, db)
     register_context(app)
+
     return app
 
 def register_config(app: Flask, config_name: str) -> None:
